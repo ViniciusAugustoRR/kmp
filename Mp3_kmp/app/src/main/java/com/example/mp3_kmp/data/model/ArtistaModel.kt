@@ -9,6 +9,7 @@ class ArtistaModel(
 
 ) : Parcelable {
 
+
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         TODO("Albums")
