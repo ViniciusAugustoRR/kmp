@@ -91,8 +91,9 @@ object MscSource {
 
                 albums.add(AlbumModel(
                     album_nm,
-                    faixas
+                    ArrayList(faixas.sortedWith( compareBy { it.mNomefaixa }))
                 ))
+
                 album_nm = track.mNomeAlbum
                 faixas = ArrayList()
                 faixas.add(track)
@@ -121,7 +122,7 @@ object MscSource {
             } else {
                 artistas.add(ArtistaModel(
                     artista_nm,
-                    albums
+                    ArrayList(albums.sortedWith(compareBy { it.albumNome }))
                 ))
 
                 artista_nm = album.faixas[0].mNomeArtista

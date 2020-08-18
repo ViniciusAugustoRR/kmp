@@ -1,4 +1,4 @@
-package com.example.mp3_kmp.view.adapter
+package com.example.mp3_kmp.view.adapter.ArtistAdapters
 
 import android.media.MediaMetadataRetriever
 import androidx.recyclerview.widget.RecyclerView
@@ -10,18 +10,15 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.example.mp3_kmp.R
 import com.example.mp3_kmp.data.model.AlbumModel
-import kotlinx.android.synthetic.main.faixa_list_item.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.android.synthetic.main.album_float_item.view.*
 
-class AlbumRecyclerAdapter(private val interaction: Interaction? = null) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ArtistAlbumRecyclerAdapter(private val interaction: Interaction? = null) :
+        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     val DIFF_CALLBACK = object : DiffUtil.ItemCallback<AlbumModel>() {
 
         override fun areItemsTheSame(oldItem: AlbumModel, newItem: AlbumModel): Boolean {
-            return oldItem.faixas == newItem.faixas
+            return oldItem.albumNome == newItem.albumNome
         }
 
         override fun areContentsTheSame(oldItem: AlbumModel, newItem: AlbumModel): Boolean {
@@ -35,19 +32,19 @@ class AlbumRecyclerAdapter(private val interaction: Interaction? = null) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         return AlbumVH(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.faixa_list_item,
-                parent,
-                false
-            ),
-            interaction
+                LayoutInflater.from(parent.context).inflate(
+                        R.layout.album_float_item,
+                        parent,
+                        false
+                ),
+                interaction
         )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is AlbumVH -> {
-                holder.bind(differ.currentList[position])
+                holder.bind(differ.currentList.get(position))
             }
         }
     }
@@ -62,8 +59,8 @@ class AlbumRecyclerAdapter(private val interaction: Interaction? = null) :
 
     class AlbumVH
     constructor(
-        itemView: View,
-        private val interaction: Interaction?
+            itemView: View,
+            private val interaction: Interaction?
     ) : RecyclerView.ViewHolder(itemView) {
 
         val mmr = MediaMetadataRetriever()
@@ -73,22 +70,12 @@ class AlbumRecyclerAdapter(private val interaction: Interaction? = null) :
                 interaction?.onItemSelected(adapterPosition, item)
             }
 
+            mmr.setDataSource(item.faixas[0].mDirect)
 
-            CoroutineScope(Dispatchers.Default).launch{
-                mmr.setDataSource(item.faixas[0].mDirect)
-
-                CoroutineScope(Dispatchers.Main).launch {
-                    itemView.card_faixa_nomeFaixa.text = item.albumNome
-                    itemView.card_faixa_nomeAlbum.text = item.faixas[item.faixas.size - 1].mNomeArtista
-                    Glide.with(context!!)
-                            .asBitmap()
-                            .load(mmr.embeddedPicture)
-                            .into(itemView.card_faixa_album)
-
-                }
-            }
-
-
+            Glide.with(this.context)
+                .asBitmap()
+                .load(mmr.embeddedPicture)
+                .into(itemView.album_float_cover)
         }
     }
 

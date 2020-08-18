@@ -7,9 +7,9 @@ import com.example.mp3_kmp.data.model.AlbumModel
 import com.example.mp3_kmp.data.repository.MscSource
 
 class AlbumVM : ViewModel() {
-
     private val _mAlbums : MutableLiveData<ArrayList<AlbumModel>> = MscSource.getAlbums()
 
     fun getAlbums(): LiveData<ArrayList<AlbumModel>> = _mAlbums
+
 
 }

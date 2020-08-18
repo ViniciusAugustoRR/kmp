@@ -1,6 +1,7 @@
 package com.example.mp3_kmp.view.fragment
 
 
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.mp3_kmp.R
 import com.example.mp3_kmp.logic.viewmodel.PlayerVM
 import kotlinx.android.synthetic.main.fragment_runnning_player.*
@@ -22,7 +24,7 @@ import kotlinx.coroutines.launch
 
 class RunnningPlayerFragment : Fragment() {
 
-
+    private val mmr = MediaMetadataRetriever()
     lateinit var playerVM: PlayerVM
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -121,7 +123,14 @@ class RunnningPlayerFragment : Fragment() {
 
 
     private fun setAssets(){
+
+        mmr.setDataSource(playerVM._Track.value!!.mDirect)
+        Glide.with(context!!)
+                .asBitmap()
+                .load(mmr.embeddedPicture)
+                .into(md_fragment_cover)
         md_fragment_Title.text = playerVM._Track.value!!.mNomefaixa
+
         playerVM.setTempoTotal()
 
     }

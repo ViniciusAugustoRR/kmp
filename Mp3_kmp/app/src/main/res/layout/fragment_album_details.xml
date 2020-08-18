@@ -8,14 +8,25 @@
     <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
                                                        android:layout_height="match_parent">
 
-    <TextView
+
+    <ImageView
+        android:id="@+id/album_detail_fragment_albumCover"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        app:layout_constraintTop_toTopOf="@id/album_detail_fragment_albumTitle"
+        app:layout_constraintBottom_toBottomOf="@id/album_detail_fragment_albumTitle"
+        tools:src="@drawable/generic_cover"
+    />
+
+        <TextView
         android:id="@+id/album_detail_fragment_albumTitle"
         android:layout_width="match_parent"
         android:layout_height="0dp"
 
         android:text="@string/album_nome_default"
-        android:textColor="@android:color/black"
-        android:textSize="30dp"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
         android:gravity="center"
 
         app:layout_constraintHeight_percent="0.13"

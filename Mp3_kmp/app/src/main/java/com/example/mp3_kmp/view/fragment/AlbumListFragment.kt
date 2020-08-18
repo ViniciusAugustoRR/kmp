@@ -17,21 +17,19 @@ import com.example.mp3_kmp.data.model.AlbumModel
 import com.example.mp3_kmp.logic.FragmentsInstances
 import com.example.mp3_kmp.logic.viewmodel.AlbumVM
 import com.example.mp3_kmp.view.adapter.AlbumRecyclerAdapter
+import com.example.mp3_kmp.view.fragment.mainFrags.AlbumDetailsFragment
 import kotlinx.android.synthetic.main.fragment_album.*
 import java.text.FieldPosition
 
 
 class AlbumListFragment(private val frag_interaction : OnAlbumInteraction? = null) : Fragment(), AlbumRecyclerAdapter.Interaction {
-
     lateinit var albumAdapter: AlbumRecyclerAdapter
     lateinit var albumVM: AlbumVM
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         albumAdapter = AlbumRecyclerAdapter(this)
         albumVM = ViewModelProvider(this).get(AlbumVM::class.java)
 
@@ -42,15 +40,12 @@ class AlbumListFragment(private val frag_interaction : OnAlbumInteraction? = nul
         return inflater.inflate(R.layout.fragment_album, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
     }
-
     private fun initView(){
-
         albumAdapter.submitList(albumVM.getAlbums().value!!)
 
         album_fragment_recycler.apply {
@@ -66,17 +61,14 @@ class AlbumListFragment(private val frag_interaction : OnAlbumInteraction? = nul
     interface  OnAlbumInteraction{
         fun onAlbumClicked(album: AlbumModel, position: Int)
     }
-
     override fun onItemSelected(position: Int, item: AlbumModel) {
         frag_interaction?.onAlbumClicked(item, position)
-        //Toast.makeText(this.context, "${item.albumNome}  ----> ${item.faixas.size} Faixas", Toast.LENGTH_SHORT).show()
 
         fragmentManager!!.beginTransaction()
-            .replace(R.id.menu_main_frame, FragmentsInstances.mainFrags[1])
+            .replace(R.id.menu_main_frame, AlbumDetailsFragment.newDetailedFragment(item))
             .commit()
 
 
     }
-
 
 }

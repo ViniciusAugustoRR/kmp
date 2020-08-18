@@ -81,7 +81,6 @@ class FaixaListFragment(private val frag_Interation : OnTrackInteraction? = null
 
     override fun onItemSelected(position: Int, item: FaixaModel) {
         frag_Interation?.onTrackClicked(item, position)
-        //Toast.makeText(this.context, "${item.mNomefaixa}  ----> ${item.mDirect}", Toast.LENGTH_SHORT).show()
 
         playerVM.setRL(faixaVM.getTracks().value!!)
         playerVM.setPos(position)

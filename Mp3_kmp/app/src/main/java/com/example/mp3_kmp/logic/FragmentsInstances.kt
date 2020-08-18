@@ -16,11 +16,7 @@ object FragmentsInstances {
     )
 
 
-    val fragPages = arrayListOf(
-            FaixaListFragment(),
-            AlbumListFragment(),
-            ArtistListFragment()
-    )
+
 
     val icons = arrayListOf(
             R.drawable.ic_faixas,

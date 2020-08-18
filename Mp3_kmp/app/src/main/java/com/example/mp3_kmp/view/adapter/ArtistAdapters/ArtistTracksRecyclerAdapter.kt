@@ -1,6 +1,5 @@
-package com.example.mp3_kmp.view.adapter
+package com.example.mp3_kmp.view.adapter.ArtistAdapters
 
-import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -12,14 +11,8 @@ import com.bumptech.glide.Glide
 import com.example.mp3_kmp.R
 import com.example.mp3_kmp.data.model.FaixaModel
 import kotlinx.android.synthetic.main.faixa_list_item.view.*
-import kotlinx.android.synthetic.main.fragment_runnning_player.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.Dispatchers.Default
-import kotlinx.coroutines.launch
 
-
-class FaixaRecyclerAdapter(private val interaction: Interaction? = null) :
+class ArtistTracksRecyclerAdapter(private val interaction: Interaction? = null) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     val DIFF_CALLBACK = object : DiffUtil.ItemCallback<FaixaModel>() {
@@ -29,7 +22,7 @@ class FaixaRecyclerAdapter(private val interaction: Interaction? = null) :
         }
 
         override fun areContentsTheSame(oldItem: FaixaModel, newItem: FaixaModel): Boolean {
-            return oldItem.equals(newItem)
+            return oldItem.mDirect == newItem.mDirect
         }
 
     }
@@ -38,40 +31,33 @@ class FaixaRecyclerAdapter(private val interaction: Interaction? = null) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
-        return FaixaRecyclerVH(
+        return FaixaVH(
                 LayoutInflater.from(parent.context).inflate(
                         R.layout.faixa_list_item,
                         parent,
                         false
                 ),
-                interaction)
+                interaction
+        )
     }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is FaixaRecyclerVH -> {
-                holder.bind(differ.currentList[position], position)
+            is FaixaVH -> {
+                holder.bind(differ.currentList.get(position))
             }
         }
     }
 
-
     override fun getItemCount(): Int {
         return differ.currentList.size
     }
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-    override fun getItemViewType(position: Int): Int {
-        return position
-    }
-
 
     fun submitList(list: List<FaixaModel>) {
         differ.submitList(list)
     }
 
-
-    class FaixaRecyclerVH
+    class FaixaVH
     constructor(
             itemView: View,
             private val interaction: Interaction?
@@ -79,29 +65,24 @@ class FaixaRecyclerAdapter(private val interaction: Interaction? = null) :
 
         val mmr = MediaMetadataRetriever()
 
-        fun bind(item: FaixaModel, position: Int) = with(itemView) {
+        fun bind(item: FaixaModel) = with(itemView) {
             itemView.setOnClickListener {
                 interaction?.onItemSelected(adapterPosition, item)
             }
-            CoroutineScope(Default).launch{
-                mmr.setDataSource(item.mDirect)
 
-                CoroutineScope(Main).launch {
-                    card_faixa_nomeFaixa.text = item.mNomefaixa
-                    card_faixa_nomeAlbum.text = item.mNomeAlbum
-                    Glide.with(context!!)
-                            .asBitmap()
-                            .load(mmr.embeddedPicture)
-                            .into(card_faixa_album)
+            mmr.setDataSource(item.mDirect)
+            Glide.with(context)
+                    .asBitmap()
+                    .load(mmr.embeddedPicture)
+                    .into(itemView.card_faixa_album)
 
-                }
-            }
+            itemView.card_faixa_nomeFaixa.text = item.mNomefaixa
+            itemView.card_faixa_nomeAlbum.text = item.mNomeAlbum
+
         }
     }
 
     interface Interaction {
         fun onItemSelected(position: Int, item: FaixaModel)
     }
-
-    
 }
